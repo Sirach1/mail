@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
@@ -20,10 +20,32 @@ function compose_email() {
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
+
+  document.querySelector('#compose-input').addEventListener('click', () => {
+    fetch('/emails', {
+      method: 'POST',
+      body: JSON.stringify({
+        recipients: document.querySelector('#compose-recipients').value,
+        subject: document.querySelector('#compose-subject').value,
+        body: document.querySelector('#compose-body').value
+      })
+    })
+      .then(response => response.json())
+      .then(result => {
+        // Print result
+        if (result.error) {
+          let errorMessage = document.querySelector('#error');
+          errorMessage.innerHTML = result.error;
+        } else {
+          load_mailbox('sent')
+        }
+        console.log(result);
+      });
+  })
 }
 
 function load_mailbox(mailbox) {
-  
+
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
