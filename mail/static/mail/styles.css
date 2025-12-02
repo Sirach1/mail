@@ -3,12 +3,50 @@ textarea {
 }
 
 .email-box {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center; 
+    gap: 10px;
     padding: 10px;
-    border-width: 1px;
-    border-color: black;
-    border-style: solid;
+    border: 1px solid black;
+    animation-name: hide;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
 }
 
-.email-box :first-child {
+.email-box h6 {
+    font-weight: 700;
+}
+
+.email-box.unread {
+    background: rgb(197, 197, 197);
+}
+
+.email-box > * {
     margin: 0px;
+}
+
+@keyframes hide {
+    0% {
+        opacity: 1;
+        height: 100%;
+        line-height: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    75% {
+        opacity: 0;
+        height: 100%;
+        line-height: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    100% {
+        opacity: 0;
+        height: 0px;
+        line-height: 0px;
+        padding: 0px;
+        margin-bottom: 0px;
+    }
 }

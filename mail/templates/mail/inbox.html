@@ -10,8 +10,11 @@
     <button class="btn btn-sm btn-outline-primary" id="archived">Archived</button>
     <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
     <hr>
-
+    <p id="error" style="color: red;"></p>
     <div id="emails-view">
+    </div>
+
+    <div id="email-view">
     </div>
 
     <div id="compose-view">
@@ -29,7 +32,6 @@
             <textarea class="form-control" id="compose-body" placeholder="Body"></textarea>
         </form>
         <button id="compose-input" class="btn btn-primary">Submit</button>
-        <p id="error" style="color: red;"></p>
     </div>
 {% endblock %}
 
