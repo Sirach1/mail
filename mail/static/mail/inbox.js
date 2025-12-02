@@ -18,19 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-});
-
-function compose_email() {
-  // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#email-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'block';
-
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
-
   document.querySelector('#compose-input').addEventListener('click', () => {
     fetch('/emails', {
       method: 'POST',
@@ -52,6 +39,34 @@ function compose_email() {
         console.log(result);
       });
   })
+
+  document.querySelector('#reply').addEventListener('click', () => {
+      const email_view = document.querySelector('#email-view');
+      //js object
+      const email = {
+        sender: email_view.dataset.sender,
+        subject: email_view.dataset.subject,
+        body: email_view.dataset.body,
+        timestamp: email_view.dataset.timestamp
+      }
+      reply(email);
+    });
+
+});
+
+function compose_email() {
+  // Show compose view and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'block';
+
+  // Clear out composition fields
+  document.querySelector('#compose-recipients').value = '';
+  document.querySelector('#compose-subject').value = '';
+  document.querySelector('#compose-body').value = '';
+  // Enable fields
+  document.querySelector('#compose-recipients').disabled = false;
+  document.querySelector('#compose-subject').disabled = false;
 }
 
 function load_mailbox(mailbox) {
@@ -132,16 +147,17 @@ function load_email(id) {
   }).then(email => {
     console.log(email);
     const email_view = document.querySelector('#email-view');
-    email_view.innerHTML = `
-      <p><strong>From: </strong> ${email.sender}</p>
-      <p><strong>To: </strong> ${email.recipients}</p>
-      <p><strong>Subject: </strong> ${email.subject}</p>
-      <p><strong>Timestamp: </strong> ${email.timestamp}</p>
-      <button id="reply" class="btn btn-outline-primary">Reply</button>
-      <hr>
-      <p>${email.body}</p>
-    `;
-    document.querySelector('#reply').addEventListener('click', () => reply(email));
+    email_view.dataset.sender = email.sender;
+    email_view.dataset.subject = email.subject;
+    email_view.dataset.timestamp = email.timestamp;
+    email_view.dataset.body = email.body;
+
+    document.querySelector('#email-sender').innerHTML = `<strong>From: </strong> ${email.sender}`;
+    document.querySelector('#email-recipients').innerHTML = `<strong>To: </strong> ${email.recipients}`;
+    document.querySelector('#email-subject').innerHTML = `<strong>Subject: </strong> ${email.subject}`;
+    document.querySelector('#email-timestamp').innerHTML = `<strong>Timestamp: </strong> ${email.timestamp}`;
+    document.querySelector('#email-body').innerHTML = email.body;
+    
     //mark email as read
     if (!email.read) {
       fetch(`/emails/${id}`, {
@@ -176,5 +192,5 @@ function reply(email) {
     subject.value = `Re: ${email.subject}`;
   }
   subject.disabled = true;
-  document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`
+  document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: ${email.body}\n`
 }

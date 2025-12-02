@@ -3,7 +3,7 @@ from .models import User, Email
 
 # Register your models here.
 class EmailAdmin(admin.ModelAdmin):
-    list_display = ("id", "sender", "display_recipients", "timestamp")
+    list_display = ("id","user", "sender", "subject", "display_recipients", "timestamp")
 
     def display_recipients(self, obj):
         return ", ".join([user.email for user in obj.recipients.all()])
